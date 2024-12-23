@@ -6,6 +6,7 @@ import { REGEXP_ONLY_CHARS } from "input-otp";
 
 type Props = {
   unlock: () => void;
+  incorrect: () => void;
 };
 
 const sha256 = async (message: string) => {
@@ -21,7 +22,7 @@ const sha256 = async (message: string) => {
 
 const SHA = "de81bf828b2fb07bb0529b1ae77559a8de6b0879d41293326d87ac30a715d802";
 
-export const LockedPage = ({ unlock }: Props) => {
+export const LockedPage = ({ unlock, incorrect }: Props) => {
   const inputotp = useRef<HTMLInputElement>(null);
   useEffect(() => {
     inputotp.current?.focus();
@@ -41,7 +42,9 @@ export const LockedPage = ({ unlock }: Props) => {
           maxLength={11}
           pattern={REGEXP_ONLY_CHARS}
           onChange={async (e) => {
-            if (e?.length === 11 && SHA === (await sha256(e))) unlock();
+            if (e?.length === 11)
+              if (SHA === (await sha256(e.toLowerCase()))) unlock();
+              else incorrect();
           }}
         >
           <InputOTPGroup>
