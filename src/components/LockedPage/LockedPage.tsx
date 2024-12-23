@@ -2,9 +2,26 @@
 
 import { useEffect, useRef } from "react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import { REGEXP_ONLY_CHARS } from "input-otp";
 
-export const LockedPage = () => {
+type Props = {
+  unlock: () => void;
+};
+
+const sha256 = async (message: string) => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(message);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+  return hashHex;
+}
+
+const SHA = "de81bf828b2fb07bb0529b1ae77559a8de6b0879d41293326d87ac30a715d802";
+
+export const LockedPage = ({ unlock }: Props) => {
   const inputotp = useRef<HTMLInputElement>(null);
   useEffect(() => {
     inputotp.current?.focus();
@@ -21,8 +38,10 @@ export const LockedPage = () => {
         <InputOTP
           ref={inputotp}
           maxLength={11}
-          pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-          onChange={(e) => console.log(e)}
+          pattern={REGEXP_ONLY_CHARS}
+          onChange={async (e) => {
+            if(e?.length === 11 && SHA === await sha256(e)) unlock();
+          }}
         >
           <InputOTPGroup>
             <InputOTPSlot index={0} />
