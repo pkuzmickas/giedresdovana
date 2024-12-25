@@ -39,7 +39,7 @@ export const UnlockedPage = () => {
       <div className="w-full h-2 bg-white" />
       <div>Ačiū už draugystę.</div>
       <div>Šį nuotraukų albumą vadinu:</div>
-      <div className="font-bold italic">"P & G over the years"</div>
+      <div className="font-bold italic">&quot;P & G over the years&quot;</div>
       <div className="w-full h-2 bg-white" />
       <div className="md:p-48 p-8 flex flex-col items-center gap-8 pt-4">
         <div>Aš ir Giedrė 2016</div>
